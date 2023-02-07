@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-func NewEventTicketCreaetd(eventID string, ticketID string, ticketStatus string, ticketPrice float32, seatNumber string, metadata map[string]interface{}) *Event {
+func NewEventTicketCreated(eventID string, ticketID string, ticketStatus string, ticketPrice float32, seatNumber string, metadata map[string]interface{}) *Event {
 	return &Event{
 		EventType: "TICKET_CREATED",
 		Data: map[string]interface{}{
