@@ -8,7 +8,7 @@ const (
 	Available string = "AVAILABLE"
 	Locked    string = "LOCKED" // LOCKED-BY-USER-x-x-x
 	Sold      string = "SOLD"   // SOLD-TO-USER-x-x-x
-	CANCELLED string = "CANCELLED"
+	Cancelled string = "CANCELLED"
 )
 
 const (
