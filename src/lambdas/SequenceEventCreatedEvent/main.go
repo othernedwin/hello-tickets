@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	event "hello-tickets/src/events"
+	helloTicketsEvents "hello-tickets/src/events"
 	"hello-tickets/src/utils"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -20,7 +20,7 @@ import (
 
 func SequenceEventCreatedEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-	var eventCreatedData event.EventCreatedData
+	var eventCreatedData helloTicketsEvents.EventCreatedData
 
 	err := utils.UnmarshalAPIGatewayRequestBody(&eventCreatedData, request)
 
@@ -31,7 +31,7 @@ func SequenceEventCreatedEvent(ctx context.Context, request events.APIGatewayPro
 	// Generate a unique UUID for the user
 	eventID := "event-" + uuid.New().String()
 
-	event := event.NewEventCreatedEvent(eventID, eventCreatedData.EventOrganizers, eventCreatedData.EventName, eventCreatedData.EventTime, eventCreatedData.EventLocation, nil)
+	event := helloTicketsEvents.NewEventCreatedEvent(eventID, eventCreatedData.EventOrganizers, eventCreatedData.EventName, eventCreatedData.EventTime, eventCreatedData.EventLocation, nil)
 
 	data, err := json.Marshal(event)
 
