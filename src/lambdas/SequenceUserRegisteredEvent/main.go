@@ -18,16 +18,9 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserRegisteredData struct {
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	Email       string `json:"email"`
-	PhoneNumber string `json:"phoneNumber"`
-}
-
 func SequenceUserRegisteredEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-	var userRegisteredData UserRegisteredData
+	var userRegisteredData event.UserRegisteredData
 
 	err := utils.UnmarshalAPIGatewayRequestBody(&userRegisteredData, request)
 
@@ -38,7 +31,7 @@ func SequenceUserRegisteredEvent(ctx context.Context, request events.APIGatewayP
 	// Generate a unique UUID for the user
 	userID := "user-" + uuid.New().String()
 
-	event := event.NewEventUserRegistered(userID, userRegisteredData.FirstName, userRegisteredData.LastName, userRegisteredData.Email, userRegisteredData.PhoneNumber, nil)
+	event := event.NewUserRegisteredEvent(userID, userRegisteredData.FirstName, userRegisteredData.LastName, userRegisteredData.Email, userRegisteredData.PhoneNumber, nil)
 
 	data, err := json.Marshal(event)
 

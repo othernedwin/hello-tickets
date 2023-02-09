@@ -4,7 +4,14 @@ import (
 	"time"
 )
 
-func NewEventUserRegistered(userID string, firstName string, lastName string, email string, phoneNumber string, metadata map[string]interface{}) *Event {
+type UserRegisteredData struct {
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
+}
+
+func NewUserRegisteredEvent(userID string, firstName string, lastName string, email string, phoneNumber string, metadata map[string]interface{}) *Event {
 	return &Event{
 		EventType: "USER_REGISTERED",
 		Data: map[string]interface{}{
