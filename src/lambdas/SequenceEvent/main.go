@@ -2,36 +2,42 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 
 	helloTicketsEvents "hello-tickets/src/events"
-	"hello-tickets/src/utils"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/kinesis"
-	"github.com/google/uuid"
 )
 
-func SequenceUserRegisteredEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func SequenceEvent(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-	var userRegisteredData helloTicketsEvents.UserRegisteredData
+	var eventData []byte = []byte(request.Body)
 
-	err := utils.UnmarshalAPIGatewayRequestBody(&userRegisteredData, request)
+	if request.IsBase64Encoded {
+		decodedBytes, err := base64.StdEncoding.DecodeString(request.Body)
 
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, fmt.Errorf("failed to unmarshal api gateway request body data: %v", err)
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, fmt.Errorf("failed to decode request api gateway request body data: %v", err)
+		}
+
+		eventData = decodedBytes
 	}
 
-	// Generate a unique UUID for the user
-	userID := "user-" + uuid.New().String()
+	eventType := request.QueryStringParameters["eventType"]
 
-	event := helloTicketsEvents.NewUserRegisteredEvent(userID, userRegisteredData.FirstName, userRegisteredData.LastName, userRegisteredData.Email, userRegisteredData.PhoneNumber, nil)
+	key, event, err := helloTicketsEvents.NewEvent(eventType, eventData, nil)
+
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, fmt.Errorf("failed to initialize event: %v", err)
+	}
 
 	data, err := json.Marshal(event)
 
@@ -53,15 +59,15 @@ func SequenceUserRegisteredEvent(ctx context.Context, request events.APIGatewayP
 	_, err = kinesisClient.PutRecord(&kinesis.PutRecordInput{
 		StreamName:   &stream,
 		Data:         data,
-		PartitionKey: aws.String(userID),
+		PartitionKey: &key,
 	})
 
 	if err != nil {
-		return events.APIGatewayProxyResponse{}, fmt.Errorf("error putting record: %v", err)
+		return events.APIGatewayProxyResponse{}, fmt.Errorf("error putting record in kinesis: %v", err)
 	}
 
 	body := map[string]interface{}{
-		"userID": userID,
+		"partitionKey": key,
 	}
 
 	jsonBody, err := json.Marshal(body)
@@ -80,5 +86,5 @@ func SequenceUserRegisteredEvent(ctx context.Context, request events.APIGatewayP
 }
 
 func main() {
-	lambda.Start(SequenceUserRegisteredEvent)
+	lambda.Start(SequenceEvent)
 }

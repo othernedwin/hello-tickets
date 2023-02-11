@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+const (
+	EventCreated string = "EVENT_CREATED"
+)
+
 type EventCreatedData struct {
 	EventOrganizers []string `json:"eventOrganizers"`
 	EventName       string   `json:"eventName"`
@@ -11,9 +15,9 @@ type EventCreatedData struct {
 	EventLocation   string   `json:"eventLocation"`
 }
 
-func NewEventCreatedEvent(eventID string, eventOrganizers []string, eventName string, eventTime string, eventLocation string, metadata map[string]interface{}) *Event {
-	return &Event{
-		EventType: "EVENT_CREATED",
+func NewEventCreatedEvent(eventID string, eventOrganizers []string, eventName string, eventTime string, eventLocation string, metadata map[string]interface{}) Event {
+	return Event{
+		EventType: EventCreated,
 		Data: map[string]interface{}{
 			"eventID":         eventID,
 			"eventOrganizers": eventOrganizers,

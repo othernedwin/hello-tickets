@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+const (
+	UserRegistered string = "USER_REGISTERED"
+)
+
 type UserRegisteredData struct {
 	FirstName   string `json:"firstName"`
 	LastName    string `json:"lastName"`
@@ -11,9 +15,9 @@ type UserRegisteredData struct {
 	PhoneNumber string `json:"phoneNumber"`
 }
 
-func NewUserRegisteredEvent(userID string, firstName string, lastName string, email string, phoneNumber string, metadata map[string]interface{}) *Event {
-	return &Event{
-		EventType: "USER_REGISTERED",
+func NewUserRegisteredEvent(userID string, firstName string, lastName string, email string, phoneNumber string, metadata map[string]interface{}) Event {
+	return Event{
+		EventType: UserRegistered,
 		Data: map[string]interface{}{
 			"userID":      userID,
 			"firstName":   firstName,

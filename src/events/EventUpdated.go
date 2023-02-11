@@ -5,6 +5,10 @@ import (
 )
 
 const (
+	EventUpdated string = "EVENT_UPDATED"
+)
+
+const (
 	UpdateEventOrganziers string = "UPDATE_EVENT_ORGANIZERS"
 	UpdateEventName       string = "UPDATE_EVENT_NAME"
 	UpdateEventTime       string = "UPDATE_EVENT_TIME"
@@ -12,13 +16,14 @@ const (
 )
 
 type EventUpdatedData struct {
+	EventID     string                 `json:"eventID"`
 	UpdateTypes []string               `json:"updateTypes"`
 	UpdateData  map[string]interface{} `json:"updateData"`
 }
 
-func NewEventUpdatedEvent(eventID string, updateTypes []string, updateData map[string]interface{}, metadata map[string]interface{}) *Event {
-	return &Event{
-		EventType: "EVENT_UPDATED",
+func NewEventUpdatedEvent(eventID string, updateTypes []string, updateData map[string]interface{}, metadata map[string]interface{}) Event {
+	return Event{
+		EventType: EventUpdated,
 		Data: map[string]interface{}{
 			"eventID":     eventID,
 			"updateTypes": updateTypes,

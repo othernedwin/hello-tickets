@@ -5,6 +5,10 @@ import (
 )
 
 const (
+	TicketUpdated string = "TICKET_UPDATED"
+)
+
+const (
 	Available string = "AVAILABLE"
 	Locked    string = "LOCKED" // LOCKED-BY-USER-x-x-x
 	Sold      string = "SOLD"   // SOLD-TO-USER-x-x-x
@@ -17,15 +21,15 @@ const (
 )
 
 type TicketUpdatedData struct {
+	TicketID    string                 `json:"ticketID"`
 	UpdateTypes []string               `json:"updateTypes"`
 	UpdateData  map[string]interface{} `json:"updateData"`
 }
 
-func NewTicketUpdatedEvent(ticketID string, eventID string, updateTypes []string, updateData map[string]interface{}, metadata map[string]interface{}) *Event {
-	return &Event{
-		EventType: "TICKET_UPDATED",
+func NewTicketUpdatedEvent(ticketID string, updateTypes []string, updateData map[string]interface{}, metadata map[string]interface{}) Event {
+	return Event{
+		EventType: TicketUpdated,
 		Data: map[string]interface{}{
-			"eventID":     eventID,
 			"ticketID":    ticketID,
 			"updateTypes": updateTypes,
 			"updateData":  updateData,
