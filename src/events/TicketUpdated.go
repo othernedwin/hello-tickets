@@ -21,9 +21,9 @@ const (
 )
 
 type TicketUpdatedData struct {
-	TicketID    string                 `json:"ticketID"`
-	UpdateTypes []string               `json:"updateTypes"`
-	UpdateData  map[string]interface{} `json:"updateData"`
+	TicketID    string                 `json:"ticketID" validate:"required"`
+	UpdateTypes []string               `json:"updateTypes" validate:"required"`
+	UpdateData  map[string]interface{} `json:"updateData" validate:"required"`
 }
 
 func NewTicketUpdatedEvent(ticketID string, updateTypes []string, updateData map[string]interface{}, metadata map[string]interface{}) Event {

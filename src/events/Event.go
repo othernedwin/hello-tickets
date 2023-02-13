@@ -1,9 +1,10 @@
 package events
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
+
+	"hello-tickets/src/utils"
 
 	"github.com/google/uuid"
 )
@@ -23,32 +24,32 @@ func NewEvent(eventType string, eventData []byte, metadata map[string]interface{
 	switch eventType {
 	case EventCancelled:
 		var eventCancelledData EventCancelledData
-		err = json.Unmarshal(eventData, &eventCancelledData)
+		err = utils.UnmarshalAndValidate(eventData, &eventCancelledData)
 		key = eventCancelledData.EventID
 		event = NewEventCancelledEvent(key, metadata)
 	case EventCreated:
 		var eventCreatedData EventCreatedData
-		err = json.Unmarshal(eventData, &eventCreatedData)
+		err = utils.UnmarshalAndValidate(eventData, &eventCreatedData)
 		key = "event-" + uuid.New().String()
 		event = NewEventCreatedEvent(key, eventCreatedData.EventOrganizers, eventCreatedData.EventName, eventCreatedData.EventTime, eventCreatedData.EventLocation, metadata)
 	case EventUpdated:
 		var eventUpdatedData EventUpdatedData
-		err = json.Unmarshal(eventData, &eventUpdatedData)
+		err = utils.UnmarshalAndValidate(eventData, &eventUpdatedData)
 		key = eventUpdatedData.EventID
 		event = NewEventUpdatedEvent(key, eventUpdatedData.UpdateTypes, eventUpdatedData.UpdateData, metadata)
 	case TicketCreated:
 		var ticketCreatedData TicketCreatedData
-		err = json.Unmarshal(eventData, &ticketCreatedData)
+		err = utils.UnmarshalAndValidate(eventData, &ticketCreatedData)
 		key = "ticket-" + uuid.New().String()
 		event = NewTicketCreatedEvent(key, ticketCreatedData.EventID, ticketCreatedData.SeatNumber, ticketCreatedData.TicketStatus, ticketCreatedData.TicketPrice, metadata)
 	case TicketUpdated:
 		var ticketUpdatedData TicketUpdatedData
-		err = json.Unmarshal(eventData, &ticketUpdatedData)
+		err = utils.UnmarshalAndValidate(eventData, &ticketUpdatedData)
 		key = ticketUpdatedData.TicketID
 		event = NewTicketUpdatedEvent(key, ticketUpdatedData.UpdateTypes, ticketUpdatedData.UpdateData, metadata)
 	case UserRegistered:
 		var userRegisteredData UserRegisteredData
-		err = json.Unmarshal(eventData, &userRegisteredData)
+		err = utils.UnmarshalAndValidate(eventData, &userRegisteredData)
 		key = "user-" + uuid.New().String()
 		event = NewUserRegisteredEvent(key, userRegisteredData.FirstName, userRegisteredData.LastName, userRegisteredData.Email, userRegisteredData.PhoneNumber, metadata)
 	default:

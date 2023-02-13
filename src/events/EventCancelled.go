@@ -9,7 +9,7 @@ const (
 )
 
 type EventCancelledData struct {
-	EventID string `json:"eventID"`
+	EventID string `json:"eventID" validate:"required"`
 }
 
 func NewEventCancelledEvent(eventID string, metadata map[string]interface{}) Event {

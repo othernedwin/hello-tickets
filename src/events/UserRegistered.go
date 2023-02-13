@@ -9,13 +9,14 @@ const (
 )
 
 type UserRegisteredData struct {
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	Email       string `json:"email"`
-	PhoneNumber string `json:"phoneNumber"`
+	FirstName   string `json:"firstName" validate:"required"`
+	LastName    string `json:"lastName" validate:"required"`
+	Email       string `json:"email" validate:"required"`
+	PhoneNumber string `json:"phoneNumber" validate:"required"`
 }
 
 func NewUserRegisteredEvent(userID string, firstName string, lastName string, email string, phoneNumber string, metadata map[string]interface{}) Event {
+
 	return Event{
 		EventType: UserRegistered,
 		Data: map[string]interface{}{
